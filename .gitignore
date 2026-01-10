@@ -2,6 +2,9 @@
 /vendor/
 composer.lock
 
+# Variables d'environnement
+.env
+
 # Uploads
 /public/uploads/*
 
