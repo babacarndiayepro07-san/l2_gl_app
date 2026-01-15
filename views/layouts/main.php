@@ -54,26 +54,82 @@ $currentPage = $currentPage ?? '';
                     </a>
 
                     <!-- Navigation -->
-                    <nav class="flex gap-4">
+                    <nav class="flex gap-6 items-center">
                         <a href="/" class="px-4 py2 rounded transition <?= $currentPage === 'home' ? 'bg-white bg-opacity-20' : 'hover:bg-white hover:bg-opacity-20' ?>">
                             Accueil
                         </a>
-                    </nav>
-                    <nav>
-                        <a href="/login" class="px-4 py2 rounded transition <?= $currentPage === 'login' ? 'bg-white bg-opacity-20' : 'hover:bg-white hover:bg-opacity-20' ?>">
-                            Connexion
-                        </a>
-                    </nav>
-                    <nav>
-                        <a href="/register" class="px-4 py2 rounded transition <?= $currentPage === 'register' ? 'bg-white bg-opacity-20' : 'hover:bg-white hover:bg-opacity-20' ?>">
-                            Inscription
-                        </a>
-                    </nav>
+
+                        <?php
+                        use App\Utils\Auth;
+
+                        if (Auth::check()):
+                        ?>
+                            <span class="px-4 py2 text-white/70">
+                                Bonjour
+                            </span>
+                            <a href="/logout" class="px-4 py2 rounded transition <?= $currentPage === 'logout' ? 'bg-white bg-opacity-20' : 'hover:bg-white hover:bg-opacity-20' ?>">
+                                Déconnexion
+                            </a>
+                        <?php else: ?>
+                    
+                            <!-- Menu invité -->
+                            <a href="/login" class="px-4 py2 rounded transition <?= $currentPage === 'login' ? 'bg-white bg-opacity-20' : 'hover:bg-white hover:bg-opacity-20' ?>">
+                                Connexion
+                            </a>
+
+                            <a href="/register" class="px-4 py2 rounded transition <?= $currentPage === 'register' ? 'bg-white bg-opacity-20' : 'hover:bg-white hover:bg-opacity-20' ?>">
+                                Inscription
+                            </a>
+                        <?php endif; ?>
                    </div>
                 </div>
             </header>
 
+            <?php
 
+            // Affichage des messages flash
+            use App\Utils\Session;
+
+            $successMessage = Session::getFlash('success');
+            $errorMessage = Session::getFlash('error');
+            $warningMessage = Session::getFlash('warning');
+            $infoMessage = Session::getFlash('info');
+            ?>
+            <?php if($successMessage): ?>
+                <div class="container mx-auto px-4 mt-4" role="alert">
+                    <div class="bg-green-50 border-l-4 border-green-500 text-green-800 p-4 rounded shadow-sm" role="alert">
+                        <strong class="font-bold">Succès!</strong>
+                        <span class="block sm:inline"><?= htmlspecialchars($successMessage); ?></span>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <?php if($errorMessage): ?>
+                <div class="container mx-auto px-4 mt-4" role="alert">
+                    <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded shadow-sm" role="alert">
+                        <strong class="font-bold">Erreur!</strong>
+                        <span class="block sm:inline"><?= htmlspecialchars($errorMessage); ?></span>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <?php if($warningMessage): ?>
+                <div class="container mx-auto px-4 mt-4" role="alert">
+                    <div class="bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded shadow-sm" role="alert">
+                        <strong class="font-bold">Attention!</strong>
+                        <span class="block sm:inline"><?= htmlspecialchars($warningMessage); ?></span>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <?php if($infoMessage): ?>
+                <div class="container mx-auto px-4 mt-4" role="alert">
+                    <div class="bg-blue-50 border-l-4 border-blue-500 text-blue-800 p-4 rounded shadow-sm" role="alert">
+                        <strong class="font-bold">Info!</strong>
+                        <span class="block sm:inline"><?= htmlspecialchars($infoMessage); ?></span>
+                    </div>
+                </div>
+            <?php endif; ?>
             <main class="flex-1">
                 <?= $content; ?>
             </main>

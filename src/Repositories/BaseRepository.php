@@ -24,7 +24,7 @@ abstract class BaseRepository {
 
     protected string $tableName; // Nom de la table associée au repository
 
-    public function __construct(string $tableName) {
+    public function __construct() {
         $db = Database::getInstance();
         $this->pdo = $db->getConnection();
     }

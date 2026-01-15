@@ -22,10 +22,10 @@ class User extends BaseEntity  {
         $this->numeroInstance = self::$compteurTotal; 
     }
 
-    public function __construct(string $nom, 
-    string $prenom, 
-    string $email,
-     string $password) {
+    public function __construct(string $nom = '', 
+    string $prenom = '', 
+    string $email = '',
+     string $password = '') {
         parent::__construct(); // Appel au constructeur parent
         $this->nom = $nom;
         $this->prenom = $prenom;
@@ -65,6 +65,9 @@ class User extends BaseEntity  {
         return $this->isActive;
     }
 
+    public function getPasswordHash(): string {
+        return $this->password;
+    }
     // Setters: Modifier les attributs privés
 
     public function setNom(string $nom): self {
