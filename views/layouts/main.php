@@ -10,28 +10,36 @@ $currentPage = $currentPage ?? '';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($title); ?></title>
 
+     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Configuration Tailwind personnalisée -->
     <script>
-        tailwing.config = {
+        tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         primary: {
-                            50: '#f5f5f5ff',
-                            100: '#f5f5f5ff',
-                            500: '#0e9ff9ff',
-                            600: '#10659bff',
-                            700: '#1e6ea1ff',
+                            50: '#f5f7ff',
+                            100: '#ebf0fe',
+                            500: '#1d44f1',
+                            600: 'rgb(59, 74, 163)',
+                            700: 'rgb(93, 113, 226)',
                         },
-                        500: '#14171A',
-                    },
-                },
-            },
+                        secondary: {
+                            500: '#102ba3',
+                        }
+                    }
+                }
+            }
         }
     </script>
+
     <style type="text/tailwindcss">
-        .gradient-primary {
-            background: linear-gradient(135deg, #1DA1F2 0%, #a9bac5ff 100%);
+        @layer utilities {
+            .gradient-primary {
+                background: linear-gradient(135deg, #1d44f1 0%, #a8a7a7 100%);
+            }
         }
     </style>
 </head>

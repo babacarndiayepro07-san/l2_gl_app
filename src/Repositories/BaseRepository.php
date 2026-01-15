@@ -44,12 +44,55 @@ abstract class BaseRepository {
         try {
             $sql = "SELECT * FROM {$this->tableName} ORDER BY created_at DESC";
             $stmt = $this->pdo->prepare($sql);// Prepare la requête
-            $results = $stmt->fetchAll();
+            $results = $stmt->fetchAll(); // Tableau de tableaux associatifs
             return $this->hydrateMultiple($results);
         } catch (PDOException $e) {
-            throw new \Exception("Erreur lors de la récupération des enregistrements : " . $e->getMessage());
+             $this->logError($e);
             return [];
         }
+    }
+
+    public function findById(int $id): ?BaseEntity {
+        try {
+            $sql = "SELECT * FROM {$this->tableName} WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $result = $stmt->fetch(); // Tableau associatif ou false
+            if ($result) {
+                return $this->hydrate($result);
+            }
+            return null;
+        } catch (PDOException $e) {
+            $this->logError($e);
+            return null;
+        }
+    }
+
+    public function delete(int $id): bool {
+        try {
+            $sql = "DELETE FROM {$this->tableName} WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([':id' => $id]);
+   
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            $this->logError($e);
+            return false;
+        }
+    }
+
+    protected function executeCommand(string $sql, array $params = []): bool {
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute($params);
+        } catch (PDOException $e) {
+            $this->logError($e);
+            return false;
+        }
+    }
+
+    protected function lastInsertId(): int {
+        return (int)$this->pdo->lastInsertId();
     }
 
     public function hydrateMultiple(array $results): array {
@@ -58,5 +101,16 @@ abstract class BaseRepository {
             $entities[] = $this->hydrate($row);
         }
         return $entities;
+    }
+
+    protected function logError(PDOException $e): void {
+        $logFile = ROOT_PATH . '/logs/repository.log';
+
+        if(!is_dir(dirname($logFile))) {
+            mkdir(dirname($logFile), 0755, true);
+        }
+
+        $message = date('Y-m-d H:i:s') . " - Erreur PDO: " . $e->getMessage() . PHP_EOL;
+        file_put_contents($logFile, $message, FILE_APPEND);
     }
 }
