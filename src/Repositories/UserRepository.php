@@ -18,8 +18,8 @@ class UserRepository extends BaseRepository {
              ->setAvatar($data['avatar'] ?? null)
              ->setRole($data['role'] ?? null)
              ->setIsActive(isset($data['is_active']) ? (bool)$data['is_active'] : null)
-             ->setCreatedAt($data['created_at'])
-             ->setUpdatedAt($data['updated_at']);
+             ->setCreatedAt(new \DateTime($data['created_at']))
+             ->setUpdatedAt(new \DateTime($data['updated_at']));
         return $user;
     }
 
@@ -28,7 +28,10 @@ class UserRepository extends BaseRepository {
             $sql = "SELECT * FROM {$this->tableName} WHERE email = :email";
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(':email', $email, \PDO::PARAM_STR);
+            $stmt->execute();
             $result = $stmt->fetch(); // Tableau associatif ou false
+            /* var_dump($result);
+            die('ici'); */
             if ($result) {
                 return $this->hydrate($result);
             }

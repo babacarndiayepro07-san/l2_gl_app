@@ -2,8 +2,11 @@
 // Chargement de la configuration(autoload, dotenv, constantes, etc.)
 require __DIR__ . '/../config/config.php';
 
+use App\Controllers\AuthController;
+
 $requestUri = $_SERVER['REQUEST_URI'];
 $scriptName = dirname($_SERVER['SCRIPT_NAME']);
+$requestMethod = $_SERVER['REQUEST_METHOD'];
 
 //Netoyage de l'URI
 $path = str_replace($scriptName, '', $requestUri);
@@ -24,7 +27,28 @@ switch ($path) {
         require_once __DIR__ . '/../views/home/index.php';
         break;
     case 'login':
-        require_once __DIR__ . '/../views/auth/login.php';
+        $authController = new AuthController();
+        if($requestMethod === 'POST') {
+            $authController->login();
+        }  
+
+        if($requestMethod === 'GET') {
+            $authController->showLoginForm();
+        }
+        break;
+    case 'register':
+        $authController = new AuthController();
+        if($requestMethod === 'POST') {
+            $authController->register();
+        } 
+        
+        if($requestMethod === 'GET') {
+            $authController->showRegisterForm();
+        }
+        break;
+    case 'logout':
+        $authController = new AuthController();
+        $authController->logout();
         break;
     default:
         http_response_code(404);
