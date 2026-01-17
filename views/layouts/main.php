@@ -65,7 +65,7 @@ $currentPage = $currentPage ?? '';
                         if (Auth::check()):
                         ?>
                             <span class="px-4 py2 text-white/70">
-                                Bonjour
+                                Bonjour <?= htmlspecialchars(Auth::user()->getFullName()); ?> !
                             </span>
                             <a href="/logout" class="px-4 py2 rounded transition <?= $currentPage === 'logout' ? 'bg-white bg-opacity-20' : 'hover:bg-white hover:bg-opacity-20' ?>">
                                 Déconnexion

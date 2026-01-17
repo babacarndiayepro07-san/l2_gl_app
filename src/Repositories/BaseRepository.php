@@ -44,6 +44,7 @@ abstract class BaseRepository {
         try {
             $sql = "SELECT * FROM {$this->tableName} ORDER BY created_at DESC";
             $stmt = $this->pdo->prepare($sql);// Prepare la requête
+            $stmt->execute();
             $results = $stmt->fetchAll(); // Tableau de tableaux associatifs
             return $this->hydrateMultiple($results);
         } catch (PDOException $e) {
@@ -57,6 +58,7 @@ abstract class BaseRepository {
             $sql = "SELECT * FROM {$this->tableName} WHERE id = :id";
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
             $result = $stmt->fetch(); // Tableau associatif ou false
             if ($result) {
                 return $this->hydrate($result);
